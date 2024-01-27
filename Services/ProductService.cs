@@ -3,7 +3,7 @@ using ProvaPub.Repository;
 
 namespace ProvaPub.Services
 {
-    public class ProductService
+    public class ProductService : IService<Product>
     {
         TestDbContext _ctx;
 
@@ -12,9 +12,14 @@ namespace ProvaPub.Services
             _ctx = ctx;
         }
 
-        public ProductList ListProducts(int page)
+        public List<Product> List(int page)
         {
-            return new ProductList() { HasNext = false, TotalCount = 10, Products = _ctx.Products.Skip((page - 1) * 10).Take(10).ToList<Product>() };
+            return _ctx.Products.Skip((page - 1) * 10).Take(10).ToList();
         }
+
+        //public ProductList ListProducts(int page)
+        //{
+        //    return new ProductList() { HasNext = false, TotalCount = 10, Products = _ctx.Products.Skip((page - 1) * 10).Take(10).ToList<Product>() };
+        //}
     }
 }

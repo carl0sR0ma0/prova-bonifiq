@@ -19,23 +19,26 @@ namespace ProvaPub.Controllers
 		/// 
 		/// </summary>
 		TestDbContext _ctx;
+		private readonly IService<Product> _productService;
+		private readonly IService<Customer> _customerService;
+
 		public Parte2Controller(TestDbContext ctx)
 		{
 			_ctx = ctx;
+			_productService = new ProductService(ctx);
+            _customerService = new CustomerService(ctx);
 		}
 	
 		[HttpGet("products")]
 		public ProductList ListProducts(int page)
 		{
-			var productService = new ProductService(_ctx);
-			return productService.ListProducts(page);
+			return new ProductList() { HasNext = false, TotalCount = 10, Products = _productService.List(page) };
 		}
 
 		[HttpGet("customers")]
 		public CustomerList ListCustomers(int page)
 		{
-			var customerService = new CustomerService(_ctx);
-			return customerService.ListCustomers(page);
+			return new CustomerList() { HasNext = false, TotalCount = 10, Customers = _customerService.List(page) };
 		}
 	}
 }
