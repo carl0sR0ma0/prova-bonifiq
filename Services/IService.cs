@@ -1,7 +1,9 @@
-﻿namespace ProvaPub.Services
+﻿using ProvaPub.Models;
+
+namespace ProvaPub.Services
 {
     public interface IService<T>
     {
-        List<T> List(int page);
+        ReturnList<T> List(int page);
     }
 }

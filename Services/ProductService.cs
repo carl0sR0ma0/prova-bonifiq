@@ -12,14 +12,15 @@ namespace ProvaPub.Services
             _ctx = ctx;
         }
 
-        public List<Product> List(int page)
+        public ReturnList<Product> List(int page)
         {
-            return _ctx.Products.Skip((page - 1) * 10).Take(10).ToList();
-        }
+            IQueryable<Product> query = _ctx.Products;
 
-        //public ProductList ListProducts(int page)
-        //{
-        //    return new ProductList() { HasNext = false, TotalCount = 10, Products = _ctx.Products.Skip((page - 1) * 10).Take(10).ToList<Product>() };
-        //}
+            int count = query.Count();
+            var items = query.Skip((page - 1) * 10).Take(10).ToList();
+            var lastItem = items.Last();
+
+            return new ReturnList<Product>() { HasNext = lastItem.Id + 1 < count, TotalCount = count, List = items };
+        }
     }
 }
