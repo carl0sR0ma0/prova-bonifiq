@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using ProvaPub.Models;
 using ProvaPub.Repository;
 using ProvaPub.Services;
 
@@ -12,8 +13,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<RandomService>();
+// Injeção de dependência para os Services de Product e Customers
+builder.Services.AddScoped<IService<Product>, ProductService>();
+builder.Services.AddScoped<IService<Customer>, CustomerService>();
+
 builder.Services.AddDbContext<TestDbContext>(options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("ctx")));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
