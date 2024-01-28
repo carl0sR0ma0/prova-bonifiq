@@ -1,45 +1,55 @@
-﻿namespace ProvaPub.Repository
+﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+
+namespace ProvaPub.Repository
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        private readonly TestDbContext? _context = null;
+        private readonly TestDbContext? _ctx = null;
 
         public Repository(TestDbContext context)
         {
-            this._context = context;
+            this._ctx = context;
         }
 
         public T Create(T model)
         {
-            _context?.Set<T>().Add(model);
+            _ctx?.Set<T>().Add(model);
 
             return model;
         }
         public T Update(T model)
         {
-            _context?.Set<T>().Update(model);
+            _ctx?.Set<T>().Update(model);
 
             return model;
         }
 
         public void Delete(T entity)
         {
-            _context?.Set<T>().Remove(entity);
+            _ctx?.Set<T>().Remove(entity);
         }
 
         public IEnumerable<T> GetAll()
         {
-            return _context.Set<T>().ToList();
+            return _ctx.Set<T>().ToList();
         }
 
         public IQueryable<T> GetByQuery()
         {
-            return _context.Set<T>().AsQueryable();
+            return _ctx.Set<T>().AsQueryable();
         }
 
         public T GetById(int id)
         {
-            return _context.Set<T>().Find(id);
+            return _ctx.Set<T>().Find(id);
+        }
+
+        public async Task<T> GetAsync(int id) => await _ctx.Set<T>().FindAsync(id);
+
+        public Task<int> CountAsync(Expression<Func<T, bool>> predicate)
+        {
+            return _ctx.Set<T>().Where(predicate).CountAsync();
         }
     }
 }

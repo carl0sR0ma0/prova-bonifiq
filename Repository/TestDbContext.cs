@@ -1,13 +1,11 @@
 ﻿using Bogus;
 using Microsoft.EntityFrameworkCore;
 using ProvaPub.Models;
-using System.Collections.Generic;
-using System.Reflection.Emit;
 
 namespace ProvaPub.Repository
 {
 
-	public class TestDbContext : DbContext
+    public class TestDbContext : DbContext
 	{
 		public TestDbContext(DbContextOptions<TestDbContext> options) : base(options)
 		{
@@ -17,11 +15,11 @@ namespace ProvaPub.Repository
 		{
 			base.OnModelCreating(modelBuilder);
 
-			modelBuilder.Entity<Customer>().HasData(getCustomerSeed());
-			modelBuilder.Entity<Product>().HasData(getProductSeed());
+			modelBuilder.Entity<Customer>().HasData(GetCustomerSeed());
+			modelBuilder.Entity<Product>().HasData(GetProductSeed());
 		}
 
-		private Customer[] getCustomerSeed()
+		private static Customer[] GetCustomerSeed()
 		{
 			List<Customer> result = new();
 			for (int i = 0; i < 20; i++)
@@ -34,7 +32,7 @@ namespace ProvaPub.Repository
 			}
 			return result.ToArray();
 		}
-		private Product[] getProductSeed()
+		private static Product[] GetProductSeed()
 		{
 			List<Product> result = new();
 			for (int i = 0; i < 20; i++)

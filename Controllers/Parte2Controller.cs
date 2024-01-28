@@ -18,20 +18,18 @@ namespace ProvaPub.Controllers
         /// Como você faria pra criar uma estrutura melhor, com menos repetição de código? E quanto ao CustomerService/ProductService. Você acha que seria possível evitar a repetição de código?
         /// 
         /// Resposta: Para criar uma estrutura melhor sem repetição de código utilizando a injeção de dependência eu criaria uma Interface ‘IService’ e definiria os métodos:
-		///			      * ReturnList<Product> List(int page);
-		///			      * ReturnList<Customer> List(int page);
-		///			  Em seguida criaria a classe Service e implementaria os métodos da interface. Porém, eu acredito que não seja uma prática legal, pois iria
-		///			  quebrar o principio do Single Responsibility Principle (SOLID), no qual ser iriamos deixar de ter uma serviço especifico para cada classe.
+        ///			      * ReturnList<Product> List(int page);
+        ///			      * ReturnList<Customer> List(int page);
+        ///			  Em seguida criaria a classe Service e implementaria os métodos da interface. Porém, eu acredito que não seja uma prática legal, pois iria
+        ///			  quebrar o principio do Single Responsibility Principle (SOLID), no qual ser iriamos deixar de ter uma serviço especifico para cada classe.
         /// </summary>
-        TestDbContext _ctx;
 		private readonly IService<Product> _productService;
 		private readonly IService<Customer> _customerService;
 
 		public Parte2Controller(TestDbContext ctx)
 		{
-			_ctx = ctx;
-			_productService = new ProductService(ctx);
-            _customerService = new CustomerService(ctx);
+            _productService = new ProductService(new Repository<Product>(ctx));
+            _customerService = new CustomerService(new Repository<Customer>(ctx), new Repository<Order>(ctx));
 		}
 	
 		[HttpGet("products")]
