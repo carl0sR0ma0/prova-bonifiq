@@ -20,7 +20,9 @@ builder.Services.AddSingleton<OrderService>();
 builder.Services.AddScoped<IService<Product>, ProductService>();
 builder.Services.AddScoped<IService<Customer>, CustomerService>();
 
-// Injeção de dependência para as Repositories de Product e Customers
+// Injeção de dependência para as Repositories de Product, Customers e Order
+builder.Services.AddScoped<IRepository<Product>, Repository<Product>>();
+builder.Services.AddScoped<IRepository<Customer>, Repository<Customer>>();
 builder.Services.AddScoped<IRepository<Order>, Repository<Order>>();
 builder.Services.AddScoped<IRepository<Customer>, Repository<Customer>>();
 
