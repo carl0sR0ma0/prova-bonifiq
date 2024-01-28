@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using ProvaPub.Models;
 using ProvaPub.Repository;
 using ProvaPub.Services;
@@ -13,20 +14,34 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<RandomService>();
+builder.Services.AddSingleton<OrderService>();
+
 // Injeção de dependência para os Services de Product e Customers
 builder.Services.AddScoped<IService<Product>, ProductService>();
 builder.Services.AddScoped<IService<Customer>, CustomerService>();
 
+// Injeção de dependência para as Repositories de Product e Customers
+builder.Services.AddScoped<IRepository<Order>, Repository<Order>>();
+builder.Services.AddScoped<IRepository<Customer>, Repository<Customer>>();
+
 builder.Services.AddDbContext<TestDbContext>(options =>
-	options.UseSqlServer(builder.Configuration.GetConnectionString("ctx")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ctx")));
+
+var jsonSerializerSettings = new JsonSerializerSettings
+{
+    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+    // outras configurações, se necessário
+};
+
+builder.Services.AddControllers().AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-	app.UseSwagger();
-	app.UseSwaggerUI();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
