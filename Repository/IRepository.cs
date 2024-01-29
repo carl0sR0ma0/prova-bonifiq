@@ -12,5 +12,6 @@ namespace ProvaPub.Repository
         T GetById(int id);
         Task<T> GetAsync(int id);
         Task<int> CountAsync(Expression<Func<T, bool>> predicate);
+        Task<int> CountAsync();
     }
 }

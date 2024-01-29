@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using ProvaPub.Models;
 using ProvaPub.Repository;
 using ProvaPub.Services;
+using ProvaPub.Services.Pagination;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,8 +18,8 @@ builder.Services.AddSingleton<RandomService>();
 builder.Services.AddSingleton<OrderService>();
 
 // Injeção de dependência para os Services de Product e Customers
-builder.Services.AddScoped<IService<Product>, ProductService>();
-builder.Services.AddScoped<IService<Customer>, CustomerService>();
+builder.Services.AddScoped<IPaginationService<Product>, ProductService>();
+builder.Services.AddScoped<IPaginationService<Customer>, CustomerService>();
 
 // Injeção de dependência para as Repositories de Product, Customers e Order
 builder.Services.AddScoped<IRepository<Product>, Repository<Product>>();

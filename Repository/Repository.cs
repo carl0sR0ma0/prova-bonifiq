@@ -34,7 +34,6 @@ namespace ProvaPub.Repository
         {
             return _ctx.Set<T>().ToList();
         }
-
         public IQueryable<T> GetByQuery()
         {
             return _ctx.Set<T>().AsQueryable();
@@ -47,9 +46,14 @@ namespace ProvaPub.Repository
 
         public async Task<T> GetAsync(int id) => await _ctx.Set<T>().FindAsync(id);
 
-        public Task<int> CountAsync(Expression<Func<T, bool>> predicate)
+        public async Task<int> CountAsync(Expression<Func<T, bool>> predicate)
         {
-            return _ctx.Set<T>().Where(predicate).CountAsync();
+            return await _ctx.Set<T>().Where(predicate).CountAsync();
+        }
+
+        public async Task<int> CountAsync()
+        {
+            return await _ctx.Set<T>().CountAsync();
         }
     }
 }
