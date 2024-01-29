@@ -5,7 +5,6 @@
         int seed;
         public RandomService()
         {
-            GetNewSeed();
         }
         public int GetRandom()
         {
