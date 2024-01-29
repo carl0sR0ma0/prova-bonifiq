@@ -34,8 +34,7 @@ namespace ProvaPub.Services
             if (purchaseValue <= 0) throw new ArgumentOutOfRangeException(nameof(purchaseValue));
 
             //Business Rule: Non registered Customers cannot purchase
-            var customer = await _customerRepository.GetAsync(customerId);
-            if (customer == null) throw new InvalidOperationException($"Customer Id {customerId} does not exists");
+            var customer = await _customerRepository.GetAsync(customerId) ?? throw new InvalidOperationException($"Customer Id {customerId} does not exists");
 
             //Business Rule: A customer can purchase only a single time per month
             var baseDate = DateTime.UtcNow.AddMonths(-1);
