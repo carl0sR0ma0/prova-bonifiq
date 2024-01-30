@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProvaPub.Models;
 using ProvaPub.Models.Enums;
-using ProvaPub.Repository;
 using ProvaPub.Services;
-using ProvaPub.Services.Payment;
+using ProvaPub.Services.Payment.Interfaces;
 
 namespace ProvaPub.Controllers
 {
@@ -21,16 +20,16 @@ namespace ProvaPub.Controllers
     public class Parte3Controller : ControllerBase
     {
         private readonly OrderService _orderService;
-        private readonly TestDbContext _ctx;
-        private readonly IRepository<Customer> _customerRepository;
-        private readonly IRepository<Order> _orderRepository;
+        private readonly IPixPaymentService _pixPaymentService;
+        private readonly ICreditCardPaymentService _creditCardPaymentService;
+        private readonly IPaypalPaymentService _paypalPaymentService;
 
-        public Parte3Controller(OrderService orderService, TestDbContext ctx, IRepository<Customer> customerRepository, IRepository<Order> orderRepository)
+        public Parte3Controller(OrderService orderService, IPixPaymentService pixPaymentService, ICreditCardPaymentService creditCardPaymentService, IPaypalPaymentService paypalPaymentService)
         {
             _orderService = orderService;
-            _ctx = ctx;
-            _customerRepository = customerRepository;
-            _orderRepository = orderRepository;
+            _pixPaymentService = pixPaymentService;
+            _creditCardPaymentService = creditCardPaymentService;
+            _paypalPaymentService = paypalPaymentService;
         }
 
         [HttpPost("orders")]
@@ -40,11 +39,11 @@ namespace ProvaPub.Controllers
             // PIX => 10% de desconto
             // CARTÃO DE CRÉDITO => 5% de juros
             // PAYPAL => 5% de desconto
-            var paymentStrategies = new Dictionary<TypePayment, Func<PaymentServiceAbstract>>
+            Dictionary<TypePayment, Func<IPaymentService>> paymentStrategies = new()
             {
-                { TypePayment.PIX, () => new PixPaymentService(_ctx, _customerRepository, _orderRepository) },
-                { TypePayment.CREDITCARD, () => new CreditCardPaymentService(_ctx, _customerRepository, _orderRepository) },
-                { TypePayment.PAYPAL, () => new PaypalPaymentService(_ctx, _customerRepository, _orderRepository) }
+                { TypePayment.PIX, () => _pixPaymentService },
+                { TypePayment.CREDITCARD, () => _creditCardPaymentService },
+                { TypePayment.PAYPAL, () => _paypalPaymentService }
             };
 
             if (paymentStrategies.TryGetValue(payment.TypePayment, out var paymentStrategyFactory))

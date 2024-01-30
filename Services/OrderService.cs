@@ -1,13 +1,13 @@
 ﻿using ProvaPub.Models;
-using ProvaPub.Services.Payment;
+using ProvaPub.Services.Payment.Interfaces;
 
 namespace ProvaPub.Services
 {
     public class OrderService
 	{
-		public async Task<Order>? PayOrder(PaymentServiceAbstract payment, decimal paymentValue, int customerId)
+		public async Task<Order?> PayOrder(IPaymentService payment, decimal paymentValue, int customerId)
 		{
-            return await Task.FromResult(payment.ProcessPayment(paymentValue, customerId));
-		}
+			return await payment.PayOrder(paymentValue, customerId);
+        }
 	}
 }

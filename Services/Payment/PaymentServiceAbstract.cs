@@ -12,9 +12,7 @@ namespace ProvaPub.Services.Payment
 
         public Order? Order { get; set; }
 
-        public abstract Order ProcessPayment(decimal value, int customerId);
-
-        public Order? ProccessCustomer(decimal value, int customerId)
+        public Task<Order?> ProccessCustomer(decimal value, int customerId)
         {
             // Verifico se existe a compra no banco?
             Order newOrder = new()
@@ -35,7 +33,7 @@ namespace ProvaPub.Services.Payment
 
             if (newOrder == null) throw new ArgumentException("Compra não encontrada");
 
-            return orderSaved;
+            return Task.FromResult(orderSaved);
         }
     }
 }

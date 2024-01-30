@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProvaPub.Models;
-using ProvaPub.Repository;
-using ProvaPub.Services;
+using ProvaPub.Services.Pagination;
 
 namespace ProvaPub.Controllers
 {
-	
-	[ApiController]
+
+    [ApiController]
 	[Route("[controller]")]
 	public class Parte2Controller :  ControllerBase
 	{
@@ -23,25 +22,25 @@ namespace ProvaPub.Controllers
         ///			  Em seguida criaria a classe Service e implementaria os métodos da interface. Porém, eu acredito que não seja uma prática legal, pois iria
         ///			  quebrar o principio do Single Responsibility Principle (SOLID), no qual ser iriamos deixar de ter uma serviço especifico para cada classe.
         /// </summary>
-		private readonly IService<Product> _productService;
-		private readonly IService<Customer> _customerService;
+		private readonly IPaginationService<Product> _productService;
+		private readonly IPaginationService<Customer> _customerService;
 
-		public Parte2Controller(TestDbContext ctx)
+		public Parte2Controller(IPaginationService<Product> productService, IPaginationService<Customer> customerService)
 		{
-            _productService = new ProductService(new Repository<Product>(ctx));
-            _customerService = new CustomerService(new Repository<Customer>(ctx), new Repository<Order>(ctx));
+            _productService = productService;
+            _customerService = customerService;
 		}
 	
 		[HttpGet("products")]
-		public ReturnList<Product> ListProducts(int page)
+		public async Task<ReturnList<Product>> ListProducts(int page, int pageSize = 10)
 		{
-			return _productService.List(page);
+			return await _productService.ListAsync(page, pageSize);
         }
 
 		[HttpGet("customers")]
-		public ReturnList<Customer> ListCustomers(int page)
+		public async Task<ReturnList<Customer>> ListCustomers(int page, int pageSize = 10)
 		{
-			return _customerService.List(page);
-		}
+			return await _customerService.ListAsync(page, pageSize);
+        }
 	}
 }
