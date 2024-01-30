@@ -4,6 +4,8 @@ using ProvaPub.Models;
 using ProvaPub.Repository;
 using ProvaPub.Services;
 using ProvaPub.Services.Pagination;
+using ProvaPub.Services.Payment;
+using ProvaPub.Services.Payment.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,10 @@ builder.Services.AddSingleton<OrderService>();
 // Injeção de dependência para os Services de Product e Customers
 builder.Services.AddScoped<IPaginationService<Product>, ProductService>();
 builder.Services.AddScoped<IPaginationService<Customer>, CustomerService>();
+
+builder.Services.AddScoped<IPixPaymentService, PixPaymentService>();
+builder.Services.AddScoped<ICreditCardPaymentService, CreditCardPaymentService>();
+builder.Services.AddScoped<IPaypalPaymentService, PaypalPaymentService>();
 
 // Injeção de dependência para as Repositories de Product, Customers e Order
 builder.Services.AddScoped<IRepository<Product>, Repository<Product>>();

@@ -1,9 +1,10 @@
 ﻿using ProvaPub.Models;
 using ProvaPub.Repository;
+using ProvaPub.Services.Payment.Interfaces;
 
 namespace ProvaPub.Services.Payment
 {
-    public class PixPaymentService : PaymentServiceAbstract
+    public class PixPaymentService : PaymentServiceAbstract, IPixPaymentService
     {
         public PixPaymentService(TestDbContext ctx, IRepository<Customer> customerRepository, IRepository<Order> orderRepository)
         {
@@ -11,14 +12,14 @@ namespace ProvaPub.Services.Payment
             _customerRepository = customerRepository;
             _orderRepository = orderRepository;
         }
-
-        public override Order ProcessPayment(decimal value, int customerId)
+        
+        public async Task<Order?> PayOrder(decimal value, int customerId)
         {
             // Implementação para pagamentos por pix (descontando 10% no valor)
             value -= 10.00m / 100.00m * value;
             Console.WriteLine("PAGAMENTO POR PIX");
 
-            return ProccessCustomer(value, customerId);
+            return await ProccessCustomer(value, customerId);
         }
     }
 }
